@@ -83,17 +83,17 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - uses: actions/cache@v3
-      id: cache
-      with:
-        path: ${{ env.pythonLocation }}
-        key: >
-          test-linux-compiled
-          ${{ runner.os }}
-          ${{ env.pythonLocation }}
-          ${{ hashFiles('setup.py') }}
-          ${{ hashFiles('requirements.txt') }}
-          ${{ hashFiles('tests/requirements-testing.txt') }}
+    # - uses: actions/cache@v3
+    #   id: cache
+    #   with:
+    #     path: ${{ env.pythonLocation }}
+    #     key: >
+    #       test-linux-compiled
+    #       ${{ runner.os }}
+    #       ${{ env.pythonLocation }}
+    #       ${{ hashFiles('setup.py') }}
+    #       ${{ hashFiles('requirements.txt') }}
+    #       ${{ hashFiles('tests/requirements-testing.txt') }}
 
     - name: install
       run: make install-testing
