@@ -20,17 +20,17 @@ jobs:
         with:
           python-version: 3.9
 
-      - uses: actions/cache@v3
-        id: cache
-        with:
-          path: |
-            ${{ env.pythonLocation }}
-            .mypy_cache
-          key: >
-            lint
-            ${{ runner.os }}
-            ${{ env.pythonLocation }}
-            ${{ hashFiles('tests/requirements-linting.txt') }}
+      # - uses: actions/cache@v3
+      #   id: cache
+      #   with:
+      #     path: |
+      #       ${{ env.pythonLocation }}
+      #       .mypy_cache
+      #     key: >
+      #       lint
+      #       ${{ runner.os }}
+      #       ${{ env.pythonLocation }}
+      #       ${{ hashFiles('tests/requirements-linting.txt') }}
 
       - name: install
         if: steps.cache.outputs.cache-hit != 'true'
@@ -48,17 +48,17 @@ jobs:
       with:
         python-version: '3.10'
 
-    - uses: actions/cache@v3
-      id: cache
-      with:
-        path: ${{ env.pythonLocation }}
-        key: >
-          docs-build
-          ${{ runner.os }}
-          ${{ env.pythonLocation }}
-          ${{ hashFiles('setup.py') }}
-          ${{ hashFiles('requirements.txt') }}
-          ${{ hashFiles('docs/requirements.txt') }}
+    # - uses: actions/cache@v3
+    #   id: cache
+    #   with:
+    #     path: ${{ env.pythonLocation }}
+    #     key: >
+    #       docs-build
+    #       ${{ runner.os }}
+    #       ${{ env.pythonLocation }}
+    #       ${{ hashFiles('setup.py') }}
+    #       ${{ hashFiles('requirements.txt') }}
+    #       ${{ hashFiles('docs/requirements.txt') }}
 
     - name: install
       if: steps.cache.outputs.cache-hit != 'true'
@@ -144,17 +144,17 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - uses: actions/cache@v3
-      id: cache
-      with:
-        path: ${{ env.pythonLocation }}
-        key: >
-          test-not-compiled
-          ${{ runner.os }}
-          ${{ env.pythonLocation }}
-          ${{ hashFiles('setup.py') }}
-          ${{ hashFiles('requirements.txt') }}
-          ${{ hashFiles('tests/requirements-testing.txt') }}
+    # - uses: actions/cache@v3
+    #   id: cache
+    #   with:
+    #     path: ${{ env.pythonLocation }}
+    #     key: >
+    #       test-not-compiled
+    #       ${{ runner.os }}
+    #       ${{ env.pythonLocation }}
+    #       ${{ hashFiles('setup.py') }}
+    #       ${{ hashFiles('requirements.txt') }}
+    #       ${{ hashFiles('tests/requirements-testing.txt') }}
 
     - name: install
       run: make install-testing
