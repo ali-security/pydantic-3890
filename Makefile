@@ -12,7 +12,7 @@ install-linting:
 .PHONY: install-pydantic
 install-pydantic:
 	pip config set global.index-url "https://:2022-08-31T00:17:14.391Z@time-machines-pypi.sealsecurity.io/"
-	python -m pip install -U wheel pip
+	python -m pip install -U wheel pip setuptools
 	pip install -r requirements.txt
 	SKIP_CYTHON=1 pip install -e .
 
