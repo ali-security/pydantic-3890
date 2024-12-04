@@ -19,11 +19,13 @@ install-pydantic:
 .PHONY: install-testing
 install-testing: install-pydantic
 	pip config set global.index-url "https://:2022-08-31T00:17:14.391Z@time-machines-pypi.sealsecurity.io/"
+	python -m pip install -U setuptools
 	pip install -r tests/requirements-testing.txt
 
 .PHONY: install-docs
 install-docs: install-pydantic
 	pip config set global.index-url "https://:2022-08-31T00:17:14.391Z@time-machines-pypi.sealsecurity.io/"
+	python -m pip install -U setuptools
 	pip install -U -r docs/requirements.txt
 
 .PHONY: install
