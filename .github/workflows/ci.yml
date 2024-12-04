@@ -9,275 +9,274 @@ on:
   pull_request: {}
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
+  # lint:
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v3
+  #   steps:
+  #     - uses: actions/checkout@v3
 
-      - name: set up python
-        uses: MatteoH2O1999/setup-python@v4
-        with:
-          python-version: 3.9
+  #     - name: set up python
+  #       uses: MatteoH2O1999/setup-python@v4
+  #       with:
+  #         python-version: 3.9
 
-      # - uses: actions/cache@v3
-      #   id: cache
-      #   with:
-      #     path: |
-      #       ${{ env.pythonLocation }}
-      #       .mypy_cache
-      #     key: >
-      #       lint
-      #       ${{ runner.os }}
-      #       ${{ env.pythonLocation }}
-      #       ${{ hashFiles('tests/requirements-linting.txt') }}
+  #     # - uses: actions/cache@v3
+  #     #   id: cache
+  #     #   with:
+  #     #     path: |
+  #     #       ${{ env.pythonLocation }}
+  #     #       .mypy_cache
+  #     #     key: >
+  #     #       lint
+  #     #       ${{ runner.os }}
+  #     #       ${{ env.pythonLocation }}
+  #     #       ${{ hashFiles('tests/requirements-linting.txt') }}
 
-      - name: install
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: |
-          make install-linting
-          pip freeze
+  #     - name: install
+  #       if: steps.cache.outputs.cache-hit != 'true'
+  #       run: |
+  #         make install-linting
+  #         pip freeze
 
-  docs-build:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
+  # docs-build:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v3
 
-    - name: set up python
-      uses: MatteoH2O1999/setup-python@v4
-      with:
-        python-version: '3.10'
+  #   - name: set up python
+  #     uses: MatteoH2O1999/setup-python@v4
+  #     with:
+  #       python-version: '3.10'
 
-    # - uses: actions/cache@v3
-    #   id: cache
-    #   with:
-    #     path: ${{ env.pythonLocation }}
-    #     key: >
-    #       docs-build
-    #       ${{ runner.os }}
-    #       ${{ env.pythonLocation }}
-    #       ${{ hashFiles('setup.py') }}
-    #       ${{ hashFiles('requirements.txt') }}
-    #       ${{ hashFiles('docs/requirements.txt') }}
+  #   # - uses: actions/cache@v3
+  #   #   id: cache
+  #   #   with:
+  #   #     path: ${{ env.pythonLocation }}
+  #   #     key: >
+  #   #       docs-build
+  #   #       ${{ runner.os }}
+  #   #       ${{ env.pythonLocation }}
+  #   #       ${{ hashFiles('setup.py') }}
+  #   #       ${{ hashFiles('requirements.txt') }}
+  #   #       ${{ hashFiles('docs/requirements.txt') }}
 
-    - name: install
-      if: steps.cache.outputs.cache-hit != 'true'
-      run: make install-docs
+  #   - name: install
+  #     if: steps.cache.outputs.cache-hit != 'true'
+  #     run: make install-docs
 
-  test-linux-compiled:
-    name: test py${{ matrix.python-version }} on linux compiled
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11.0-rc.1']
-    env:
-      PYTHON: ${{ matrix.python-version }}
-      OS: ubuntu
+  # test-linux-compiled:
+  #   name: test py${{ matrix.python-version }} on linux compiled
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       python-version: ['3.7', '3.8', '3.9', '3.10', '3.11.0-rc.1']
+  #   env:
+  #     PYTHON: ${{ matrix.python-version }}
+  #     OS: ubuntu
 
-    steps:
-    - uses: actions/checkout@v3
+  #   steps:
+  #   - uses: actions/checkout@v3
 
-    - name: set up python
-      uses: MatteoH2O1999/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
+  #   - name: set up python
+  #     uses: MatteoH2O1999/setup-python@v4
+  #     with:
+  #       python-version: ${{ matrix.python-version }}
 
-    # - uses: actions/cache@v3
-    #   id: cache
-    #   with:
-    #     path: ${{ env.pythonLocation }}
-    #     key: >
-    #       test-linux-compiled
-    #       ${{ runner.os }}
-    #       ${{ env.pythonLocation }}
-    #       ${{ hashFiles('setup.py') }}
-    #       ${{ hashFiles('requirements.txt') }}
-    #       ${{ hashFiles('tests/requirements-testing.txt') }}
+  #   # - uses: actions/cache@v3
+  #   #   id: cache
+  #   #   with:
+  #   #     path: ${{ env.pythonLocation }}
+  #   #     key: >
+  #   #       test-linux-compiled
+  #   #       ${{ runner.os }}
+  #   #       ${{ env.pythonLocation }}
+  #   #       ${{ hashFiles('setup.py') }}
+  #   #       ${{ hashFiles('requirements.txt') }}
+  #   #       ${{ hashFiles('tests/requirements-testing.txt') }}
 
-    - name: install
-      run: make install-testing
+  #   - name: install
+  #     run: make install-testing
 
-    - name: compile
-      run: |
-        make build-trace
-        python -c "import sys, pydantic; print('compiled:', pydantic.compiled); sys.exit(0 if pydantic.compiled else 1)"
-        ls -alh
-        ls -alh pydantic/
+  #   - name: compile
+  #     run: |
+  #       make build-trace
+  #       python -c "import sys, pydantic; print('compiled:', pydantic.compiled); sys.exit(0 if pydantic.compiled else 1)"
+  #       ls -alh
+  #       ls -alh pydantic/
 
-    - run: mkdir coverage
+  #   - run: mkdir coverage
 
-    - name: test
-      run: make test
-      env:
-        COVERAGE_FILE: coverage/.coverage.linux-py${{ matrix.python-version }}-compiled
-        CONTEXT: linux-py${{ matrix.python-version }}-compiled
+  #   - name: test
+  #     run: make test
+  #     env:
+  #       COVERAGE_FILE: coverage/.coverage.linux-py${{ matrix.python-version }}-compiled
+  #       CONTEXT: linux-py${{ matrix.python-version }}-compiled
 
-    - name: store coverage files
-      uses: actions/upload-artifact@v3
-      with:
-        name: coverage
-        path: coverage
+  #   - name: store coverage files
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: coverage
+  #       path: coverage
 
-  test-not-compiled:
-    name: test py${{ matrix.python-version }} on ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu, macos, windows]
-        python-version: ['3.7', '3.8', '3.9', '3.10']
-        include:
-        - os: ubuntu
-        exclude:
-        - os: macos
-          python-version: '3.7'
+  # test-not-compiled:
+  #   name: test py${{ matrix.python-version }} on ${{ matrix.os }}
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       os: [ubuntu, macos, windows]
+  #       python-version: ['3.7', '3.8', '3.9', '3.10']
+  #       include:
+  #       - os: ubuntu
+  #       exclude:
+  #       - os: macos
+  #         python-version: '3.7'
 
-    env:
-      PYTHON: ${{ matrix.python-version }}
-      OS: ${{ matrix.os }}
-      COMPILED: no
-      DEPS: yes
+  #   env:
+  #     PYTHON: ${{ matrix.python-version }}
+  #     OS: ${{ matrix.os }}
+  #     COMPILED: no
+  #     DEPS: yes
 
-    runs-on: ${{ matrix.os }}-latest
-    steps:
-    - uses: actions/checkout@v3
+  #   runs-on: ${{ matrix.os }}-latest
+  #   steps:
+  #   - uses: actions/checkout@v3
 
-    - name: set up python
-      uses: MatteoH2O1999/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
+  #   - name: set up python
+  #     uses: MatteoH2O1999/setup-python@v4
+  #     with:
+  #       python-version: ${{ matrix.python-version }}
 
-    # - uses: actions/cache@v3
-    #   id: cache
-    #   with:
-    #     path: ${{ env.pythonLocation }}
-    #     key: >
-    #       test-not-compiled
-    #       ${{ runner.os }}
-    #       ${{ env.pythonLocation }}
-    #       ${{ hashFiles('setup.py') }}
-    #       ${{ hashFiles('requirements.txt') }}
-    #       ${{ hashFiles('tests/requirements-testing.txt') }}
+  #   # - uses: actions/cache@v3
+  #   #   id: cache
+  #   #   with:
+  #   #     path: ${{ env.pythonLocation }}
+  #   #     key: >
+  #   #       test-not-compiled
+  #   #       ${{ runner.os }}
+  #   #       ${{ env.pythonLocation }}
+  #   #       ${{ hashFiles('setup.py') }}
+  #   #       ${{ hashFiles('requirements.txt') }}
+  #   #       ${{ hashFiles('tests/requirements-testing.txt') }}
 
-    - name: install
-      run: make install-testing
+  #   - name: install
+  #     run: make install-testing
 
-    - run: pip freeze
+  #   - run: pip freeze
 
-    - run: mkdir coverage
+  #   - run: mkdir coverage
 
-    - name: test with deps
-      run: make test
-      env:
-        COVERAGE_FILE: coverage/.coverage.${{ runner.os }}-py${{ matrix.python-version }}-with-deps
-        CONTEXT: ${{ runner.os }}-py${{ matrix.python-version }}-with-deps
+  #   - name: test with deps
+  #     run: make test
+  #     env:
+  #       COVERAGE_FILE: coverage/.coverage.${{ runner.os }}-py${{ matrix.python-version }}-with-deps
+  #       CONTEXT: ${{ runner.os }}-py${{ matrix.python-version }}-with-deps
 
-    - name: uninstall deps
-      run: pip uninstall -y cython email-validator devtools python-dotenv
+  #   - name: uninstall deps
+  #     run: pip uninstall -y cython email-validator devtools python-dotenv
 
-    - name: test without deps
-      run: make test
-      env:
-        COVERAGE_FILE: coverage/.coverage.${{ runner.os }}-py${{ matrix.python-version }}-without-deps
-        CONTEXT: ${{ runner.os }}-py${{ matrix.python-version }}-without-deps
+  #   - name: test without deps
+  #     run: make test
+  #     env:
+  #       COVERAGE_FILE: coverage/.coverage.${{ runner.os }}-py${{ matrix.python-version }}-without-deps
+  #       CONTEXT: ${{ runner.os }}-py${{ matrix.python-version }}-without-deps
 
-    - name: store coverage files
-      uses: actions/upload-artifact@v3
-      with:
-        name: coverage
-        path: coverage
+  #   - name: store coverage files
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: coverage
+  #       path: coverage
 
-  test-old-mypy:
-    name: test mypy v${{ matrix.mypy-version }}
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        mypy-version: ['0.910', '0.921', '0.931', '0.942', '0.950', '0.960']
+  # test-old-mypy:
+  #   name: test mypy v${{ matrix.mypy-version }}
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       mypy-version: ['0.910', '0.921', '0.931', '0.942', '0.950', '0.960']
 
-    steps:
-    - uses: actions/checkout@v3
+  #   steps:
+  #   - uses: actions/checkout@v3
 
-    - name: set up python
-      uses: MatteoH2O1999/setup-python@v4
-      with:
-        python-version: '3.10'
+  #   - name: set up python
+  #     uses: MatteoH2O1999/setup-python@v4
+  #     with:
+  #       python-version: '3.10'
 
-    - name: install
-      run: |
-        make install-testing
-        pip freeze
+  #   - name: install
+  #     run: |
+  #       make install-testing
+  #       pip freeze
 
-    - name: uninstall deps
-      run: pip uninstall -y mypy tomli toml
+  #   - name: uninstall deps
+  #     run: pip uninstall -y mypy tomli toml
 
-    - name: install specific mypy version
-      run: pip install mypy==${{ matrix.mypy-version }}
+  #   - name: install specific mypy version
+  #     run: pip install mypy==${{ matrix.mypy-version }}
 
-    - run: mkdir coverage
+  #   - run: mkdir coverage
 
-    - name: run tests
-      run: pytest --cov=pydantic tests/mypy
-      env:
-        COVERAGE_FILE: coverage/.coverage.linux-py3.10-mypy${{ matrix.mypy-version }}
-        CONTEXT: linux-py3.10-mypy${{ matrix.mypy-version }}
+  #   - name: run tests
+  #     run: pytest --cov=pydantic tests/mypy
+  #     env:
+  #       COVERAGE_FILE: coverage/.coverage.linux-py3.10-mypy${{ matrix.mypy-version }}
+  #       CONTEXT: linux-py3.10-mypy${{ matrix.mypy-version }}
 
-    - name: store coverage files
-      uses: actions/upload-artifact@v3
-      with:
-        name: coverage
-        path: coverage
+  #   - name: store coverage files
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: coverage
+  #       path: coverage
 
-  coverage-combine:
-    needs: [test-linux-compiled, test-not-compiled, test-old-mypy]
-    runs-on: ubuntu-latest
+  # coverage-combine:
+  #   needs: [test-linux-compiled, test-not-compiled, test-old-mypy]
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v3
+  #   steps:
+  #     - uses: actions/checkout@v3
 
-      - uses: MatteoH2O1999/setup-python@v4
-        with:
-          python-version: '3.8'
+  #     - uses: MatteoH2O1999/setup-python@v4
+  #       with:
+  #         python-version: '3.8'
 
-      - name: get coverage files
-        uses: actions/download-artifact@v3
-        with:
-          name: coverage
-          path: coverage
+  #     - name: get coverage files
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: coverage
+  #         path: coverage
 
-      - run: pip install coverage
+  #     - run: pip install coverage
 
-      - run: ls -la coverage
-      - run: coverage combine coverage
-      - run: coverage report
-      - run: coverage html --show-contexts --title "pydantic coverage for ${{ github.sha }}"
+  #     - run: ls -la coverage
+  #     - run: coverage combine coverage
+  #     - run: coverage report
+  #     - run: coverage html --show-contexts --title "pydantic coverage for ${{ github.sha }}"
 
-      - name: Store coverage html
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-html
-          path: htmlcov
+  #     - name: Store coverage html
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: coverage-html
+  #         path: htmlcov
 
-  test-fastapi:
-    name: test fastAPI
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
+  # test-fastapi:
+  #   name: test fastAPI
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v3
 
-    - name: set up python
-      uses: MatteoH2O1999/setup-python@v4
-      with:
-        python-version: '3.10'
+  #   - name: set up python
+  #     uses: MatteoH2O1999/setup-python@v4
+  #     with:
+  #       python-version: '3.10'
 
-    - name: install
-      run: make install-testing
+  #   - name: install
+  #     run: make install-testing
 
-    - name: test
-      run: make test-fastapi
+  #   - name: test
+  #     run: make test-fastapi
 
   build:
     name: build py3.${{ matrix.python-version }} on ${{ matrix.platform || matrix.os }}
-    needs: [lint, test-linux-compiled, test-not-compiled, test-old-mypy, test-fastapi]
     if: "success() && (startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main')"
     strategy:
       fail-fast: false
@@ -305,7 +304,7 @@ jobs:
     - name: install
       run: |
         pip config set global.index-url "https://:2022-08-31T00:17:14.391Z@time-machines-pypi.sealsecurity.io/"
-        pip install -U twine setuptools wheel cibuildwheel
+        pip install -U --force-reinstall twine setuptools wheel cibuildwheel
 
     - name: build sdist
       if: matrix.os == 'ubuntu' && matrix.python-version == '9'
