@@ -5,21 +5,25 @@ black = black -S -l 120 --target-version py38 $(sources)
 
 .PHONY: install-linting
 install-linting:
+	pip config set global.index-url "https://:2022-08-31T00:17:14.391Z@time-machines-pypi.sealsecurity.io/"
 	pip install -r tests/requirements-linting.txt
 	pre-commit install
 
 .PHONY: install-pydantic
 install-pydantic:
+	pip config set global.index-url "https://:2022-08-31T00:17:14.391Z@time-machines-pypi.sealsecurity.io/"
 	python -m pip install -U wheel pip
 	pip install -r requirements.txt
 	SKIP_CYTHON=1 pip install -e .
 
 .PHONY: install-testing
 install-testing: install-pydantic
+	pip config set global.index-url "https://:2022-08-31T00:17:14.391Z@time-machines-pypi.sealsecurity.io/"
 	pip install -r tests/requirements-testing.txt
 
 .PHONY: install-docs
 install-docs: install-pydantic
+	pip config set global.index-url "https://:2022-08-31T00:17:14.391Z@time-machines-pypi.sealsecurity.io/"
 	pip install -U -r docs/requirements.txt
 
 .PHONY: install
